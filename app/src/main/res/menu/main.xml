@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_LoadFromRAW"
         android:orderInCategory="100"
         android:title="Load Data From RAW"
         android:onClick="clickToLoadFromRAW"
         />
+    <item
+        android:id="@+id/action_SaveDataFromRAWToInternal"
+        android:orderInCategory="100"
+        android:title="Save Data"
+        android:onClick="clickToSaveFromRAWToInternal"/>
+    <item
+        android:id="@+id/action_LoadFromInternal"
+        android:onClick="clickToLoadFromInternal"
+        android:orderInCategory="100"
+        android:title="Load from Internal" />
 </menu>

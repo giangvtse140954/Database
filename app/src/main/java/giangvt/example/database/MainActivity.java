@@ -2,23 +2,26 @@ package giangvt.example.database;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -60,9 +63,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-//        =================
-        listViewStudent = findViewById(R.id.listViewStudent);
-        txtTitle = findViewById(R.id.txtTitle);
+
 
     }
 
@@ -79,8 +80,11 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
     public void clickToLoadFromRAW(MenuItem item) {
-        System.out.println("load raw");
+        listViewStudent = findViewById(R.id.listViewStudent);
+        txtTitle = findViewById(R.id.txtTitle);
+//        System.out.println("load raw");
         try {
             adapter = new StudentAdapter();
             txtTitle.setText("List Student from RAW");
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     StudentDTO dto = (StudentDTO) listViewStudent.getItemAtPosition(position);
                     Intent intent = new Intent(MainActivity.this, StudentDetailActivity.class);
+                    intent.putExtra("action", "update");
                     intent.putExtra("dto", dto);
                     startActivity(intent);
                 }
@@ -101,5 +106,55 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void clickToSaveFromRAWToInternal(MenuItem item) {
+        try {
+
+            listViewStudent = findViewById(R.id.listViewStudent);
+            txtTitle = findViewById(R.id.txtTitle);
+            StudentDAO dao = new StudentDAO();
+            InputStream is = getResources().openRawResource(R.raw.text);
+            List<StudentDTO> list = dao.loadFromRAW(is);
+            FileOutputStream fos = openFileOutput("giangvt.txt", MODE_PRIVATE);
+            dao.saveToInternal(fos, list);
+            Toast.makeText(this, "Save success", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clickToLoadFromInternal(MenuItem item) {
+        try {
+
+            listViewStudent = findViewById(R.id.listViewStudent);
+            txtTitle = findViewById(R.id.txtTitle);
+
+            adapter = new StudentAdapter();
+            txtTitle.setText("List Student from Internal");
+            FileInputStream fis = openFileInput("giangvt.txt");
+            StudentDAO dao = new StudentDAO();
+            List<StudentDTO> listStudent = dao.loadFromInternal(fis);
+            adapter.setListStudents(listStudent);
+            listViewStudent.setAdapter(adapter);
+            listViewStudent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    StudentDTO dto = (StudentDTO) listViewStudent.getItemAtPosition(position);
+                    Intent intent = new Intent(MainActivity.this, StudentDetailActivity.class);
+                    intent.putExtra("action", "update");
+                    intent.putExtra("dto", dto);
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clickToCreate(View view) {
+        Intent intent = new Intent(this, StudentDetailActivity.class);
+        intent.putExtra("action", "create");
+        startActivity(intent);
     }
 }
