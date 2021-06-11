@@ -1,6 +1,9 @@
 package giangvt.example.database.daos;
 
+import android.os.Environment;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -75,5 +78,27 @@ public class StudentDAO {
         osw.flush();
 //        finally
         osw.close();
+    }
+    public boolean saveToExternal(List<StudentDTO> list) throws Exception {
+        boolean check = false;
+        File sdCard = Environment.getExternalStorageDirectory();
+        String realPath = sdCard.getAbsolutePath();
+        File directory = new File(realPath + "/GiangvtFiles");
+        directory.mkdir();
+        File f = new File(directory, "giangvt.txt");
+        FileOutputStream fos = new FileOutputStream(f);
+        OutputStreamWriter osw = new OutputStreamWriter(fos);
+        String result = "";
+        for (StudentDTO dto :list) {
+            result += dto.toString() + "\n";
+        }
+        osw.write(result);
+        osw.flush();
+        check = true;
+//        finally
+        osw.close();
+        fos.close();
+
+        return check;
     }
 }

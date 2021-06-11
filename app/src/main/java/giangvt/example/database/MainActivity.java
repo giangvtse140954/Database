@@ -157,4 +157,19 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("action", "create");
         startActivity(intent);
     }
+    
+    public void clickToSaveToExternal(MenuItem item) {
+        try {
+            FileInputStream fis = openFileInput("giangvt.txt");
+            StudentDAO dao = new StudentDAO();
+            List<StudentDTO> list = dao.loadFromInternal(fis);
+            dao.saveToExternal(list);
+            Toast.makeText(this, "Save", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clickToLoadFromExternal(MenuItem item) {
+    }
 }

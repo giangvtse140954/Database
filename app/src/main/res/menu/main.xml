@@ -16,4 +16,14 @@
         android:onClick="clickToLoadFromInternal"
         android:orderInCategory="100"
         android:title="Load from Internal" />
+    <item
+        android:id="@+id/action_SaveToExternal"
+        android:orderInCategory="100"
+        android:title="Save Data to External"
+        android:onClick="clickToSaveToExternal"/>
+    <item
+        android:id="@+id/action_LoadFromExternal"
+        android:onClick="clickToLoadFromExternal"
+        android:orderInCategory="100"
+        android:title="Load from Internal" />
 </menu>
